@@ -16,13 +16,20 @@ class Actions:
         category_id=int(self.add_or_get_category(category))
         self.cursor.execute('INSERT INTO items VALUES(null,?,?,?,?)',(name,category_id,date,value))
     def add_or_get_category(self,name):
-        print(name)
         self.cursor.execute('SELECT id FROM categories WHERE name=?',(name,))
-        category_id=self.cursor.fetchone()[0]
+        category_id=self.cursor.fetchone()
         if category_id==None:
             self.cursor.execute('SELECT COUNT(id) FROM categories')
             count=self.cursor.fetchone()[0]+1
             self.cursor.execute('INSERT INTO categories VALUES(?,?)',(count,name))
             self.connection.commit()
             return count
+        category_id=category_id[0]
         return category_id
+    def delete_item(self,id):
+        self.cursor.execute('DELETE FROM items WHERE id=?',(id,))
+    def list_items(self):
+        return(self.cursor.execute('SELECT * from items'))
+    def stats(self):
+        self.cursor.execute('SELECT SUM(amount) from items')
+        return self.cursor.fetchone()

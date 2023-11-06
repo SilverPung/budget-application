@@ -18,12 +18,13 @@ class Aplication:
             case 'stats':
                 self.stats()
     def add_expense(self,name,category,date,value):
-        self.actions.add_item(name=name, category=category, date=date, value=value * -1)
+        self.actions.add_item(name, category, date, -(int(value)))
     def add_income(self,name,category,date,value):
-        self.actions.add_item(name=name, category=category, date=date, value=value)
+        self.actions.add_item(name, category, date, value)
     def delete(self,id):
-        print('delete')
+        self.actions.delete_item(id)
     def list(self):
-        print('list')
+        for n in self.actions.list_items():
+            print(n)
     def stats(self):
-        print('stats')
+        print(self.actions.stats()[0])
