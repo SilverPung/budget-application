@@ -1,5 +1,6 @@
 import tkinter as tk
 import subprocess
+from tkinter import ttk
 
 class Commands:
     def add(self,expense):
@@ -61,33 +62,16 @@ class Commands:
     def delete_it(self,id):
         command=f'python main.py --delete --id {id}'
         to_sys(command)
-def get_text():
-    command = entry.get()
-    apc=Commands()
-    match(command):
-        case 'add_expense':
-            apc.add(True)
-        case 'add_income':
-            apc.add(False)
-        case 'delete':
-            apc.delete()
-        case 'list':
-            apc.list_items()
-        case 'stats':
-            apc.stats()
 def from_sys(command):
     result = subprocess.check_output(command, text=True)
 
-    print("Output from the 'ls' command:")
     output(result)
 def to_sys(command):
     try:
         result = subprocess.run(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
 
         if result.returncode == 0:
-            print("Command executed successfully")
-            print("Standard Output:")
-            print(result.stdout)
+            pass
         else:
             print("Command failed with an error code:", result.returncode)
             print("Error Output:")
@@ -102,20 +86,33 @@ def output(result):
     text=tk.Label(window,text=result)
     text.pack()
     window.mainloop()
-def handle_key(event):
-    if event.keysym == 'Return':
-        get_text()    
 if __name__=='__main__':
     window = tk.Tk()
-    window.title("Get Information Example")
+    window.title("Combobox Example")
 
-    entry = tk.Entry(window)
-    entry.pack()
+    selected_value = tk.StringVar()
 
-    get_button = tk.Button(window, text="Get Text", command=get_text)
-    get_button.pack()
-    window.bind('<Return>', handle_key)
-    result_label = tk.Label(window, text="")
-    result_label.pack()
+    combobox = ttk.Combobox(window, textvariable=selected_value)
+    combobox['values'] = ("add expense", "add income", "delete", "list", "stats")
+    combobox.pack()
+
+    selection_label = tk.Label(window, textvariable=selected_value)
+    selection_label.pack()
+
+    def on_select(event):
+        command = selected_value.get()
+        apc=Commands()
+        match(command):
+            case 'add expense':
+                apc.add(True)
+            case 'add income':
+                apc.add(False)
+            case 'delete':
+                apc.delete()
+            case 'list':
+                apc.list_items()
+            case 'stats':
+                apc.stats()
+    combobox.bind("<<ComboboxSelected>>", on_select)
 
     window.mainloop()
