@@ -56,9 +56,13 @@ class Commands:
     def add_expense(self,name,cat,date,value):
         command=f'python main.py --add-expense --name {name} --category {cat} --date {date} --value {value}'
         to_sys(command)
+        global window
+        window.destroy()
     def add_income(self,name,cat,date,value):
         command=f'python main.py --add-income --name {name} --category {cat} --date {date} --value {value}'
         to_sys(command)
+        global window
+        window.destroy()
     def delete_it(self,id):
         command=f'python main.py --delete --id {id}'
         to_sys(command)
